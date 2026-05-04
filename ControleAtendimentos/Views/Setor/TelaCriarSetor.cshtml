@@ -1,0 +1,31 @@
+﻿@model ControleAtendimentos.DTOs.SetorDTO.SetorDTORequest
+
+@{
+    ViewData["Title"] = "Cadastrar Setor";
+}
+
+<div class="text-center mb-4">
+    <h1 class="display-4">Cadastrar Setor</h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form asp-controller="Setor" asp-action="Criar" method="post">
+
+                    <div class="mb-3">
+                        <label asp-for="nome" class="form-label">Nome do Setor</label>
+                        <input asp-for="nome" class="form-control" placeholder="Ex: Suporte, TI, RH..." />
+                        <span asp-validation-for="nome" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                        <a asp-controller="Setor" asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,174 @@
+﻿@using ControleAtendimentos.DTOs.ChamadoDTO
+@using ControleAtendimentos.Models.enums.StatusEnunm
+@model List<ChamadoDTOResponse>
+
+@{
+    ViewData["Title"] = "Listar Chamados";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Listar Chamados</h1>
+</div>
+
+<div>
+    <table class="table table">
+        <thead>
+            <tr class="table-light">
+                <th>ID</th>
+                <th>Descrição</th>
+                <th>Setor</th>
+                <th>Prioridade</th>
+                <th>Status</th>
+                <th>Tempo de Atendimento</th>
+                <th>Ações</th>
+                <th>Atendimentos</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                string classeBotao;
+                string textoBotao;
+                string acaoPrincipal;
+                string backgoundStatus;
+
+                foreach (var chamado in Model)
+                {
+
+                    switch (chamado.status)
+                    {
+                        case StatusEnum.Aberto:
+                            classeBotao = "btn-outline-primary";
+                            textoBotao = "Iniciar Atendimento";
+                            acaoPrincipal = "IniciarAtendimento";
+                            backgoundStatus = "bg-primary";
+                            break;
+                        case StatusEnum.EmAndamento:
+                            classeBotao = "btn-outline-warning";
+                            textoBotao = "Finalizar Atendimento";
+                            acaoPrincipal = "FinalizarAtendimento";
+                            backgoundStatus = "bg-warning";
+                            break;
+                        case StatusEnum.Concluido:
+                            classeBotao = "btn-outline-secondary";
+                            textoBotao = "Ação Indisponível";
+                            acaoPrincipal = "";
+                            backgoundStatus = "bg-success";
+                            break;
+                        default:
+                            classeBotao = "btn-outline-secondary";
+                            textoBotao = "Ação Indisponível";
+                            acaoPrincipal = "";
+                            backgoundStatus = "bg-danger";
+                            break;
+                    }
+
+                    <tr class="bg-danger p-2 text-white bg-opacity-75">
+                        <td>@chamado.id</td>
+                        <td>@chamado.descricao</td>
+                        <td>@chamado.nomeSetor</td>
+                        <td>@chamado.prioridade.nome</td>
+                        <td>
+                            <span class="badge @backgoundStatus">
+                                @chamado.status
+                            </span>
+                        </td>
+                        <td>
+                            @if (chamado.passouTempoLimitePrioridade)
+                            {
+                                <span class="text-danger">@chamado.TempoTotalAtendimento</span>
+                            }
+                            else
+                            {
+                                <span>@chamado.TempoTotalAtendimento</span>
+                            }
+                        </td>
+                        <td>
+                            @if (chamado.status.Equals(StatusEnum.Cancelado) || chamado.status.Equals(StatusEnum.Concluido))
+                            {
+                                <button type="button" class="btn btn-sm @classeBotao" disabled>
+                                    @textoBotao
+                                </button>
+                                <button type="button" class="btn btn-outline-danger btn-sm" disabled>
+                                    Cancelar
+                                </button>
+                            }
+                            else
+                            {
+                                <form asp-action="@acaoPrincipal" asp-controller="ListarChamados" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@chamado.id" />
+                                    <button type="submit" class="btn btn-sm @classeBotao">
+                                        @textoBotao
+                                    </button>
+                                </form>
+
+                                <form asp-action="CancelarAtendimento" asp-controller="ListarChamados" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@chamado.id" />
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        Cancelar
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                        <td>
+                            <button class="btn btn-light btn-sm" type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#atendimento-@chamado.id"
+                                    onclick="alternarIcone(this)">
+                                <i class="bi bi-arrow-left-short"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="collapse" id="atendimento-@chamado.id">
+                        <td colspan="8">
+                            <div class="card card-body">
+                                @if (chamado.atendimento == null)
+                                {
+                                    <p class="text-muted mb-0">Nenhum atendimento iniciado.</p>
+                                }
+                                else
+                                {
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Data de Inicio</th>
+                                                <th scope="col">Data de fim</th>
+                                                <th scope="col">Tempo Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row">@chamado.atendimento.id</th>
+                                                <td>@chamado.atendimento.dataHoraInicio</td>
+                                                <td>@chamado.atendimento.dataHoraFim</td>
+                                                <td>@chamado.atendimento.tempoTotal</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">Nenhum chamado encontrado.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function alternarIcone(botao) {
+        const icone = botao.querySelector('i');
+        if (icone.classList.contains('bi-arrow-left-short')) {
+            icone.classList.replace('bi-arrow-left-short', 'bi-arrow-down-short');
+        } else {
+            icone.classList.replace('bi-arrow-down-short', 'bi-arrow-left-short');
+        }
+    }
+</script>

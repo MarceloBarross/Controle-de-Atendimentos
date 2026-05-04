@@ -1,0 +1,62 @@
+﻿@using ControleAtendimentos.DTOs.PrioridadeDTO;
+
+@model List<PrioridadeDTOResponse>
+
+@{
+    ViewData["Title"] = "Prioridades";
+}
+
+@if (TempData["Erro"] != null){
+    <div class="alert alert-danger">@TempData["Erro"]</div>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Prioridades</h1>
+    <br />
+</div>
+<div class="d-grid gap-2 d-md-flex justfy-content-md-end">
+    <a asp-controller="Prioridade" asp-action="TelaCriarPrioridade" class="btn btn-outline-success">Adicionar Prioridade</a>
+</div>
+<br />
+<div>
+    <table class="table table-striped">
+        <thead>
+            <tr class="table-light">
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Tempo Estimado</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var prioridade in Model)
+                {
+                    <tr>
+                        <td class="table-light">@prioridade.id</td>
+                        <td class="table-light">@prioridade.nome</td>
+                        <td class="table-light">@prioridade.tempoEstimado</td>
+                        <td class="table-light">
+                            <div class="btn-group" role="group">
+                                <a asp-controller="Prioridade" asp-action="TelaEditarPrioridade"
+                                   asp-route-id="@prioridade.id" class="btn btn-outline-warning">Editar</a>
+
+                                <form asp-controller="Prioridade" asp-action="Deletar" method="post">
+                                    <input type="hidden" name="id" value="@prioridade.id" />
+                                    <button type="submit" class="btn btn-outline-danger">Deletar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">Nenhuma prioridade encontrada.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

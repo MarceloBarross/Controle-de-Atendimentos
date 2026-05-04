@@ -1,0 +1,38 @@
+﻿@using ControleAtendimentos.View.CriarChamados
+@model ViewModel
+
+@{
+    ViewData["Title"] = "Criar Chamados";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Criar Chamados</h1>
+</div>
+<div>
+    <form asp-controller="CriarChamados" asp-action="Criar" method="post">
+        <div class="form-floating">
+            <textarea class="form-control" placeholder="Descreva o problema aqui" id="floatingTextarea2" style="height: 100px" asp-for="descricao"></textarea>
+            <label for="floatingTextarea2">Descrição</label>
+            <span asp-validation-for="descricao" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label for="Select" class="form-label">Setor</label>
+            <select id="Select" class="form-select" asp-for="setorId">
+                @foreach (var setor in Model.setores)
+                {
+                    <option value="@setor.id">@setor.nome</option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="Select" class="form-label">Prioridade</label>
+            <select id="Select" class="form-select" asp-for="prioridadeId">
+                @foreach (var p in Model.prioridades)
+                {
+                    <option value="@p.id">@p.nome</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

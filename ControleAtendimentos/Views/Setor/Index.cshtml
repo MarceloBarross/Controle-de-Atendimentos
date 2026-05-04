@@ -1,0 +1,58 @@
+﻿@using ControleAtendimentos.DTOs.SetorDTO;
+
+@model List<SetorDTOResponse>;
+
+@{
+    ViewData["Title"] = "Listar Setores";
+}
+
+@if (TempData["Erro"] != null){
+    <div class="alert alert-danger">@TempData["Erro"]</div>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Listar Setores</h1>
+    <br />
+</div>
+<div class="d-grid gap-2 d-md-flex justfy-content-md-end">   
+    <a asp-controller="Setor" asp-action="TelaCriarSetor" class="btn btn-outline-success">Adicionar Setor</a>
+</div>
+<br />
+<div>
+        <table class="table table-striped">
+            <thead>
+                <tr class="table-light">
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var setor in Model)
+                    {
+                        <tr>
+                            <td class="table-light">@setor.id</td>
+                            <td class="table-light">@setor.nome</td>
+                            <td class="table-light">
+                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                    <a asp-controller="Setor" asp-action="TelaEditarSetor" asp-route-id="@setor.id" type="button" class="btn btn-outline-warning">Editar</a>
+                                    <form asp-controller="Setor" asp-action="Deletar" method="post">
+                                        <input type="hidden" name="id" value="@setor.id" />
+                                        <button type="submit" class="btn btn-outline-danger">Deletar</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center">Nenhum setor encontrado.</td>
+                    </tr>
+                }
+        </tbody>
+        </table>
+</div>
